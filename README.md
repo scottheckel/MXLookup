@@ -37,13 +37,9 @@ The `Lookup` constructor takes a `Validate` object as its constructor.
             {
                 foreach (var i in Error.GetErrors())
                 {
-
                     Console.WriteLine(i);
-
                 }
-
             }
-
 ```
 
 Output:
