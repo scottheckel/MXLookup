@@ -1,72 +1,90 @@
-# URLValidation
-A simple class which validates URL's using Regex and popular RBL's for PHP
+# MXLookup Library for C#
+A simple library which validates and returns a DNS MXLookup query using a DNS server of your choice. I'm pretty new to programming so I'm sure this can be made a million times better. 
 
 ## Requirements
-1. PHP 5 and above!
-2. A DNS server which responds to RBL queries (Google Fails) 
+1. C# 6.0
+2. An internet connection which allows traffic on UDP port 53
 
-## Installation
-Simply add the .php to your project like so: `require 'URLValidation.php';`
+## Usage
+Reference the lib in VS and namespace in code (if you wish):
 
-## Why use URLValidation?
-At present, there is nothing built into PHP which validates a given URL correctly and then cross-checks this against external sources. Understandably you can use `filter_var($url, FILTER_VALIDATE_URL)` to see if a URL looks legit, but certain malicious strings can be passed like `'javascript://comment%0Aalert(1)"hello'` which can be dangerous. 	
+```c#
 
-URLValidation firstly checks if a URL is correct by using RegEx. After passing this check, the given domain is the cross-checked against RBL servers like Spamhaus ZEN to see if the site is listed. It will either return true or false. 
+using MXLookUp; //If you want ref namespace
 
-##Usage
-
-Create the Object instance:
-
-```php
-require 'URLValidation.php';
-$urlVal = new UrlValidation();
 ```
-Add a URL as the parameter of the `domain()` method and check the the return.
 
-```php
-$urlArray = ['http://www.bokranzr.com/test.php?test=foo&test=dfdf', 'https://en-gb.facebook.com', 'https://www.google.com'];
-foreach ($urlArray as $k=>$v) {
-    
-    echo var_dump($urlVal->domain($v)) . ' URL: ' . $v . '<br>';
-    
-}
+The Validate constructor takes a 2x strings in the order of domain & DNS server IP. 
+
+The Lookup constructor takes a Validate object as its constructor.
+
+Error is a static class which is tightly coupled with all classes part of MXLookup. In the example below, I've checked the Error.isError property to ensure validation and Socket connection has been succesful before returning the result from the Lookup object.
+
+
+```c#
+            var validateObj = new Validate("google.com", "8.8.8.8"); //Google for DNS Server
+            var lookupObj = new Lookup(validateObj);
+            var result = lookupObj.Result;
+
+            if (Error.isError != true)
+            {
+                foreach(var i in result)
+                {
+                    Console.WriteLine($"{i.Preference} {i.Hostname}");
+                }
+            }
+            else
+            {
+                foreach (var i in Error.GetErrors())
+                {
+
+                    Console.WriteLine(i);
+
+                }
+
+            }
+
 ```
 
 Output:
 
 ```
-bool(false) URL: http://www.bokranzr.com/test.php?test=foo&test=dfdf
-bool(true) URL: https://en-gb.facebook.com
-bool(true) URL: https://www.google.com
+10 aspmx.l.Google.com
+20 alt1.aspmx.l.Google.com
+30 alt2.aspmx.l.Google.com
+40 alt3.aspmx.l.Google.com
+50 alt4.aspmx.l.Google.com
 ```
-As you can see above, `www.bokranzr.com` is listed as malicious website so the domain was returned as false. 
+## Detailed Output (Debug)
 
-##Detailed Output (Debug):
+A result with a failed input:
 
-You can also output the results as an array by adding a `1` after your url parameter:
+```c#
 
-```php
-
-$url = 'http://www.bokranzr.com/test.php?test=foo&test=dfdf';
-$ReturnArray = 1; // Use 1 to return results as an Array
-
-var_dump($urlVal->domain($url, $ReturnArray));
-
-```
-
-The results are outputted as an array. If the URL was able to get as far as the RBL check, it will also show you the provider which caused the fail along with the return code. 
-
-```
-array(4) {
-	["url"] => string(51)
-	"http://www.bokranzr.com/test.php?test=foo&test=dfdf" ["domain"] => string(16)
-	"www.bokranzr.com" ["ip"] => string(12)
-	"199.7.110.88" ["rblcheck"] => array(2) {
-		["provider"] => string(13)
-		"Protected Sky" ["return"] => string(9)
-		"127.0.0.2"
-	}
-}
+            var validateObj = new Validate("Google.comasdasd", "208.67.222.222"); //OpenDNS for DNS Server
+            var lookupObj = new Lookup(validateObj);
+            var result = lookupObj.Result;
 
 ```
 
+Output:
+
+```
+Error 6: Error Response from DNS Server
+Error 7: No valid answers returned from DNS Server
+```
+
+The failed example bypassed hostname validation (.blah is becoming ever longer so set to x10 character) but the failed when querying the DNS server as there were no valid results. Other errors built in can be found below: 
+
+```c#
+
+            {0, "No Errors!" },
+            {1, "Error 1: Invalid Domain Name" },
+            {2, "Error 2: Invalid DNS IP Address - Failed to parse to IPAddress Object" },
+            {3, "Error 3: Invalid DNS IP Address - Using a Private IP" },
+            {4, "Error 4: Issue with Validation Object - Please check errors on Validation Object" },
+            {5, "Error 5: Unable to connect to host via UDP 53" },
+            {6, "Error 6: Error Response from DNS Server" },
+            {7, "Error 7: No valid answers returned from DNS Server" }
+
+```
