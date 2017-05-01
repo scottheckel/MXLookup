@@ -14,11 +14,11 @@ using MXLookUp; //If you want ref namespace
 
 ```
 
-The Validate constructor takes a 2x strings in the order of domain & DNS server IP. 
+The `Validate` constructor takes a 2x strings in the order of domain & DNS server IP. 
 
-The Lookup constructor takes a Validate object as its constructor.
+The `Lookup` constructor takes a `Validate` object as its constructor.
 
-Error is a static class which is tightly coupled with all classes part of MXLookup. In the example below, I've checked the Error.isError property to ensure validation and Socket connection has been succesful before returning the result from the Lookup object.
+`Error` is a static class which is tightly coupled with all classes part of MXLookup. In the example below, I've checked the `Error.isError` property to ensure validation and `Socket` connection has been succesful before returning the result from the `Lookup` object.
 
 
 ```c#
@@ -74,7 +74,7 @@ Error 6: Error Response from DNS Server
 Error 7: No valid answers returned from DNS Server
 ```
 
-The failed example bypassed hostname validation (.blah is becoming ever longer so set to x10 character) but the failed when querying the DNS server as there were no valid results. Other errors built in can be found below: 
+The failed example passed hostname validation due to the TLD check (TLD's (Top Level Domains) are becoming longer year by year, so I've set the RegEx TLD validation to x10 characters) but failed when querying the DNS server as there were no valid results. Other error reporting built-in can be found below: 
 
 ```c#
 
