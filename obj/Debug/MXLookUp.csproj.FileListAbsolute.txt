@@ -1,0 +1,5 @@
+C:\Users\jkitson\documents\visual studio 2017\Projects\ConsoleApp3\MXLookUp\bin\Debug\MXLookUp.dll
+C:\Users\jkitson\documents\visual studio 2017\Projects\ConsoleApp3\MXLookUp\bin\Debug\MXLookUp.pdb
+C:\Users\jkitson\documents\visual studio 2017\Projects\ConsoleApp3\MXLookUp\obj\Debug\MXLookUp.dll
+C:\Users\jkitson\documents\visual studio 2017\Projects\ConsoleApp3\MXLookUp\obj\Debug\MXLookUp.pdb
+C:\Users\jkitson\documents\visual studio 2017\Projects\ConsoleApp3\MXLookUp\obj\Debug\MXLookUp.csprojResolveAssemblyReference.cache
